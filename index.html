@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #0d6efd;
+            --primary-dark: #0a58ca;
+            --secondary: #6c757d;
+            --light-bg: #f4f6f9;
+            --text-dark: #333;
+            --text-light: #888;
+            --sidebar-width: 260px;
+            --topbar-height: 70px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            margin: 0;
+        }
+
+        /* Scrollbar styles */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+        /* Login Page */
+        #login-page {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+        }
+        
+        .login-wrapper {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+        
+        .login-wrapper h2 {
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+        }
+        
+        .login-wrapper .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+
+        .login-wrapper .btn-login {
+            background-color: var(--primary);
+            color: white;
+            border-radius: 8px;
+            padding: 12px;
+            font-weight: 600;
+            width: 100%;
+            transition: 0.3s;
+        }
+
+        .login-wrapper .btn-login:hover {
+            background-color: var(--primary-dark);
+        }
+
+        /* Main App Area */
+        #main-app { display: none; }
+        .wrapper { display: flex; width: 100%; min-height: 100vh; }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: #ffffff;
+            border-right: 1px solid #edf2f9;
+            height: 100vh;
+            position: fixed;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.03);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            height: var(--topbar-height);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid #edf2f9;
+        }
+
+        .sidebar-header h4 {
+            margin: 0;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-menu {
+            padding: 15px 0;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #5e6e82;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-left: 4px solid transparent;
+            margin-bottom: 2px;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: #f8f9fa;
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+
+        .sidebar-menu a i { width: 24px; font-size: 1.1rem; }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: margin 0.3s ease;
+        }
+
+        /* Topbar */
+        .topbar {
+            height: var(--topbar-height);
+            background-color: #ffffff;
+            border-bottom: 1px solid #edf2f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        .topbar-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            color: var(--text-dark);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #edf2f9;
+        }
+
+        .user-profile-info { text-align: right; }
+        .user-profile-info h6 { margin: 0; font-weight: 600; font-size: 0.9rem; }
+        .user-profile-info span { font-size: 0.8rem; color: var(--text-light); }
+
+        /* Sections */
+        .page-section {
+            padding: 25px;
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        
+        .page-section.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Cards */
+        .stat-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s, box-shadow 0.3s;
+            border: 1px solid #edf2f9;
+            height: 100%;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+        }
+
+        .stat-card-info h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0 0 5px 0;
+            color: var(--text-dark);
+        }
+
+        .stat-card-info p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .stat-card-icon {
+            position: absolute;
+            right: 20px;
+            bottom: 20px;
+            font-size: 3rem;
+            opacity: 0.1;
+            color: var(--primary);
+        }
+        
+        /* Forms & Tables */
+        .content-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border: 1px solid #edf2f9;
+        }
+
+        .content-card-title {
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edf2f9;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1.15rem;
+        }
+
+        .form-label { font-weight: 500; color: #444; }
+        .form-control, .form-select { border-radius: 8px; padding: 10px 15px; border: 1px solid #dee2e6; }
+        .form-control:focus, .form-select:focus { box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15); }
+        
+        .btn-submit {
+            padding: 10px 25px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+        
+        /* Table Styling */
+        .table > :not(caption) > * > * { padding: 15px; vertical-align: middle; }
+        .table-hover tbody tr:hover { background-color: #f8f9fa; }
+        
+        /* Status Badges */
+        .badge-present { background-color: #198754; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 500; }
+        .badge-absent { background-color: #dc3545; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 500; }
+
+        /* Toast Container */
+        .toast-container-custom {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1060;
+        }
+        
+        .toast { border-radius: 8px; border: none; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container-custom" id="toast-container"></div>
+
+    <!-- Login Page -->
+    <div id="login-page">
+        <div class="login-wrapper">
+            <div class="mb-4">
+                <i class="fa-solid fa-graduation-cap text-primary" style="font-size: 3.5rem;"></i>
+            </div>
+            <h2>Admin Login</h2>
+            <p class="text-muted mb-4">Sign in to School Management System</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="mb-3 text-start">
+                    <label class="form-label">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fa-solid fa-user text-muted"></i></span>
+                        <input type="text" class="form-control" id="username" placeholder="admin" value="admin" required>
+                    </div>
+                </div>
+                <div class="mb-4 text-start">
+                    <label class="form-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white"><i class="fa-solid fa-lock text-muted"></i></span>
+                        <input type="password" class="form-control" id="password" placeholder="admin123" value="admin123" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-login mb-3">Login to Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="main-app">
+        <div class="wrapper">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h4><i class="fa-solid fa-graduation-cap"></i> EduAdmin</h4>
+                </div>
+                <div class="sidebar-menu">
+                    <a href="#" class="active" onclick="navigate('dashboard', this)"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+                    <a href="#" onclick="navigate('add-student', this)"><i class="fa-solid fa-user-plus"></i> Add Student</a>
+                    <a href="#" onclick="navigate('add-teacher', this)"><i class="fa-solid fa-chalkboard-user"></i> Add Teacher</a>
+                    <a href="#" onclick="navigate('attendance', this)"><i class="fa-solid fa-calendar-check"></i> Attendance</a>
+                    <a href="#" onclick="navigate('schedule', this)"><i class="fa-solid fa-clock"></i> Class Schedule</a>
+                    <a href="#" onclick="navigate('view-data', this)"><i class="fa-solid fa-database"></i> View Data</a>
+                    <hr style="margin: 15px 20px; opacity: 0.1;">
+                    <a href="#" onclick="logout()" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                </div>
+            </aside>
+
+            <!-- Main Content Area -->
+            <main class="main-content">
+                <!-- Topbar -->
+                <header class="topbar">
+                    <h5 class="topbar-title" id="page-title">Dashboard</h5>
+                    <div class="user-profile">
+                        <div class="user-profile-info d-none d-sm-block">
+                            <h6>Admin User</h6>
+                            <span>Administrator</span>
+                        </div>
+                        <img src="https://ui-avatars.com/api/?name=Admin+User&background=0d6efd&color=fff" alt="Profile">
+                    </div>
+                </header>
+
+                <!-- Dashboard Section -->
+                <section id="dashboard" class="page-section active">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-bold mb-1">Welcome Admin!</h3>
+                            <p class="text-muted">Here is the overview of your school's data.</p>
+                        </div>
+                        <button class="btn btn-primary d-none d-md-block"><i class="fa-solid fa-download me-2"></i>Generate Report</button>
+                    </div>
+                    
+                    <div class="row g-4 mb-4">
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="stat-card">
+                                <div class="stat-card-info">
+                                    <h3>1,245</h3>
+                                    <p>Total Students</p>
+                                </div>
+                                <i class="fa-solid fa-users stat-card-icon" style="color: #0d6efd;"></i>
+                                <div class="mt-3 text-success" style="font-size: 0.85rem; font-weight: 500;">
+                                    <i class="fa-solid fa-arrow-trend-up"></i> +5.2% since last month
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="stat-card">
+                                <div class="stat-card-info">
+                                    <h3>86</h3>
+                                    <p>Total Teachers</p>
+                                </div>
+                                <i class="fa-solid fa-chalkboard-user stat-card-icon" style="color: #198754;"></i>
+                                <div class="mt-3 text-success" style="font-size: 0.85rem; font-weight: 500;">
+                                    <i class="fa-solid fa-arrow-trend-up"></i> +2 new this semester
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="stat-card">
+                                <div class="stat-card-info">
+                                    <h3>42</h3>
+                                    <p>Total Classes</p>
+                                </div>
+                                <i class="fa-solid fa-school stat-card-icon" style="color: #fd7e14;"></i>
+                                <div class="mt-3 text-muted" style="font-size: 0.85rem; font-weight: 500;">
+                                    <i class="fa-solid fa-minus"></i> No change
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="stat-card">
+                                <div class="stat-card-info">
+                                    <h3>94%</h3>
+                                    <p>Attendance Overview</p>
+                                </div>
+                                <i class="fa-solid fa-clipboard-user stat-card-icon" style="color: #6f42c1;"></i>
+                                <div class="mt-3 text-danger" style="font-size: 0.85rem; font-weight: 500;">
+                                    <i class="fa-solid fa-arrow-trend-down"></i> -1.5% since yesterday
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Student Section -->
+                <section id="add-student" class="page-section">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="content-card">
+                                <h4 class="content-card-title">Admission Form</h4>
+                                <form onsubmit="handleSubmit(event, 'Student Added Successfully!')">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Student Name</label>
+                                            <input type="text" class="form-control" placeholder="e.g. John Doe" value="John Doe" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Roll Number</label>
+                                            <input type="text" class="form-control" placeholder="e.g. S-1001" value="S-1052" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Class / Grade</label>
+                                            <select class="form-select" required>
+                                                <option value="">Select Class</option>
+                                                <option selected>Grade 10 - A</option>
+                                                <option>Grade 10 - B</option>
+                                                <option>Grade 11 - Science</option>
+                                                <option>Grade 11 - Arts</option>
+                                                <option>Grade 12 - Commerce</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Contact Number</label>
+                                            <input type="tel" class="form-control" placeholder="+1 (555) 000-0000" value="+1 (555) 123-4567" required>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Student Address</label>
+                                            <textarea class="form-control" rows="3" placeholder="Residential Address">123 School View Avenue, Education City</textarea>
+                                        </div>
+                                        <div class="col-12 mt-4 text-end">
+                                            <button type="reset" class="btn btn-light me-2">Clear</button>
+                                            <button type="submit" class="btn btn-primary btn-submit">Save Student Record</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Add Teacher Section -->
+                <section id="add-teacher" class="page-section">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="content-card">
+                                <h4 class="content-card-title">Register Faculty</h4>
+                                <form onsubmit="handleSubmit(event, 'Teacher Record Added Successfully!')">
+                                    <div class="row g-3">
+                                        <div class="col-md-12">
+                                            <label class="form-label">Teacher Name</label>
+                                            <input type="text" class="form-control" placeholder="e.g. Sarah Williams" value="Prof. Sarah Williams" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Main Subject</label>
+                                            <select class="form-select" required>
+                                                <option value="">Select Subject</option>
+                                                <option selected>Mathematics</option>
+                                                <option>Physics</option>
+                                                <option>Chemistry</option>
+                                                <option>English Literature</option>
+                                                <option>Computer Science</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Years of Experience</label>
+                                            <input type="number" class="form-control" placeholder="e.g. 5" value="8" required min="0">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Email Address</label>
+                                            <input type="email" class="form-control" placeholder="email@school.edu" value="sarah.williams@school.edu" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Joining Date</label>
+                                            <input type="date" class="form-control" value="2023-08-15" required>
+                                        </div>
+                                        <div class="col-12 mt-4 text-end">
+                                            <button type="reset" class="btn btn-light me-2">Clear</button>
+                                            <button type="submit" class="btn btn-success btn-submit">Add Teacher</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Attendance Section -->
+                <section id="attendance" class="page-section">
+                    <div class="content-card">
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+                            <h4 class="content-card-title mb-0 border-0 pb-0">Daily Attendance</h4>
+                            <div class="d-flex gap-2">
+                                <select class="form-select" style="width: auto;">
+                                    <option>Grade 10 - A</option>
+                                    <option>Grade 10 - B</option>
+                                    <option>Grade 11 - Science</option>
+                                </select>
+                                <input type="date" class="form-control" style="width: auto;" id="attendance-date">
+                            </div>
+                        </div>
+
+                        <form onsubmit="handleSubmit(event, 'Attendance saved for the selected class!')">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle border">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">Roll No.</th>
+                                            <th scope="col">Student Name</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col" class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>S-1001</td>
+                                            <td class="fw-medium">Alice Smith</td>
+                                            <td><span class="badge-present">Present</span></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <input type="radio" class="btn-check" name="att1" id="p1" checked>
+                                                    <label class="btn btn-outline-success btn-sm" for="p1">P</label>
+                                                    
+                                                    <input type="radio" class="btn-check" name="att1" id="a1">
+                                                    <label class="btn btn-outline-danger btn-sm" for="a1">A</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>S-1002</td>
+                                            <td class="fw-medium">Bob Johnson</td>
+                                            <td><span class="badge-absent">Absent</span></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <input type="radio" class="btn-check" name="att2" id="p2">
+                                                    <label class="btn btn-outline-success btn-sm" for="p2">P</label>
+                                                    
+                                                    <input type="radio" class="btn-check" name="att2" id="a2" checked>
+                                                    <label class="btn btn-outline-danger btn-sm" for="a2">A</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>S-1003</td>
+                                            <td class="fw-medium">Charlie Brown</td>
+                                            <td><span class="badge-present">Present</span></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <input type="radio" class="btn-check" name="att3" id="p3" checked>
+                                                    <label class="btn btn-outline-success btn-sm" for="p3">P</label>
+                                                    
+                                                    <input type="radio" class="btn-check" name="att3" id="a3">
+                                                    <label class="btn btn-outline-danger btn-sm" for="a3">A</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>S-1004</td>
+                                            <td class="fw-medium">Diana Miller</td>
+                                            <td><span class="badge-present">Present</span></td>
+                                            <td class="text-center">
+                                                <div class="btn-group" role="group">
+                                                    <input type="radio" class="btn-check" name="att4" id="p4" checked>
+                                                    <label class="btn btn-outline-success btn-sm" for="p4">P</label>
+                                                    
+                                                    <input type="radio" class="btn-check" name="att4" id="a4">
+                                                    <label class="btn btn-outline-danger btn-sm" for="a4">A</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-3 text-end">
+                                <button type="submit" class="btn btn-primary btn-submit">Submit Attendance</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- Class Schedule Section -->
+                <section id="schedule" class="page-section">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="content-card">
+                                <h4 class="content-card-title">Allocate Class Schedule</h4>
+                                <form onsubmit="handleSubmit(event, 'Class Scheduled Successfully!')">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Day of Week</label>
+                                            <select class="form-select" required>
+                                                <option value="">Select Day</option>
+                                                <option selected>Monday</option>
+                                                <option>Tuesday</option>
+                                                <option>Wednesday</option>
+                                                <option>Thursday</option>
+                                                <option>Friday</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Time Slot</label>
+                                            <input type="time" class="form-control" value="09:00" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Subject</label>
+                                            <select class="form-select" required>
+                                                <option value="">Select Subject</option>
+                                                <option selected>Mathematics</option>
+                                                <option>Science</option>
+                                                <option>History</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Teacher</label>
+                                            <select class="form-select" required>
+                                                <option value="">Assign Teacher</option>
+                                                <option selected>Prof. Sarah Williams</option>
+                                                <option>Mr. James Wilson</option>
+                                                <option>Mrs. Emily Davis</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12 mt-4 text-end">
+                                            <button type="reset" class="btn btn-light me-2">Clear</button>
+                                            <button type="submit" class="btn btn-primary btn-submit">Save Schedule</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- View Data Section -->
+                <section id="view-data" class="page-section">
+                    <div class="content-card mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="content-card-title mb-0 border-0 pb-0">Student Directory</h4>
+                            <div class="input-group" style="width: 250px;">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <button class="btn btn-outline-secondary" type="button"><i class="fa-solid fa-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle border">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Roll No.</th>
+                                        <th>Name</th>
+                                        <th>Class</th>
+                                        <th>Contact</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>S-1001</td>
+                                        <td class="fw-medium">Alice Smith</td>
+                                        <td>Grade 10-A</td>
+                                        <td>+1 555-0101</td>
+                                        <td><span class="badge bg-success rounded-pill px-3">Active</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>S-1002</td>
+                                        <td class="fw-medium">Bob Johnson</td>
+                                        <td>Grade 10-A</td>
+                                        <td>+1 555-0102</td>
+                                        <td><span class="badge bg-success rounded-pill px-3">Active</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>S-1003</td>
+                                        <td class="fw-medium">Charlie Brown</td>
+                                        <td>Grade 11-Sci</td>
+                                        <td>+1 555-0103</td>
+                                        <td><span class="badge bg-success rounded-pill px-3">Active</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>S-1005</td>
+                                        <td class="fw-medium">Evan Wright</td>
+                                        <td>Grade 12-Com</td>
+                                        <td>+1 555-0105</td>
+                                        <td><span class="badge bg-secondary rounded-pill px-3">Inactive</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <h4 class="content-card-title">Faculty Directory</h4>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle border">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Teacher Name</th>
+                                        <th>Subject</th>
+                                        <th>Experience</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>T-801</td>
+                                        <td class="fw-medium">Prof. Sarah Williams</td>
+                                        <td>Mathematics</td>
+                                        <td>8 Years</td>
+                                    </tr>
+                                    <tr>
+                                        <td>T-802</td>
+                                        <td class="fw-medium">Mr. James Wilson</td>
+                                        <td>Physics</td>
+                                        <td>12 Years</td>
+                                    </tr>
+                                    <tr>
+                                        <td>T-803</td>
+                                        <td class="fw-medium">Mrs. Emily Davis</td>
+                                        <td>English Literature</td>
+                                        <td>5 Years</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Application Logic -->
+    <script>
+        // Set today's date for attendance input
+        document.addEventListener('DOMContentLoaded', () => {
+            const dateInput = document.getElementById('attendance-date');
+            if(dateInput) {
+                dateInput.valueAsDate = new Date();
+            }
+        });
+
+        // Handle Login Submission
+        function handleLogin(e) {
+            e.preventDefault();
+            // In a real app, validate credentials here. For this UI mockup, just proceed.
+            document.getElementById('login-page').style.display = 'none';
+            document.getElementById('main-app').style.display = 'block';
+            
+            showToast('Login Successful', 'Welcome back to the admin dashboard.', 'success');
+        }
+
+        // Handle Logout
+        function logout() {
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-page').style.display = 'flex';
+            document.getElementById('loginForm').reset();
+            // Remove active classes
+            document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            // Set default route
+            document.querySelector('.sidebar-menu a').classList.add('active');
+            document.getElementById('dashboard').classList.add('active');
+        }
+
+        // Navigation Menu
+        const pageTitles = {
+            'dashboard': 'Dashboard Overview',
+            'add-student': 'Student Admission',
+            'add-teacher': 'Teacher Registration',
+            'attendance': 'Manage Attendance',
+            'schedule': 'Class Scheduling',
+            'view-data': 'System Records'
+        };
+
+        function navigate(sectionId, element) {
+            // Remove active class from all links and sections
+            document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+            
+            // Add active class to clicked link and corresponding section
+            element.classList.add('active');
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update Page Title
+            document.getElementById('page-title').innerText = pageTitles[sectionId] || 'School Management System';
+        }
+
+        // Generic Form Submission Handler
+        function handleSubmit(e, successMsg) {
+            e.preventDefault();
+            showToast('Action Successful', successMsg, 'success');
+            // e.target.reset(); // Optional: reset form after submission
+        }
+
+        // Toast Notification System
+        function showToast(title, message, type) {
+            let bgClass = type === 'success' ? 'bg-success' : 'bg-primary';
+            
+            const toastHTML = `
+                <div class="toast align-items-center text-white ${bgClass} border-0 mb-3" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <strong>${title}</strong><br>${message}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                </div>
+            `;
+            
+            const container = document.getElementById('toast-container');
+            container.insertAdjacentHTML('beforeend', toastHTML);
+            
+            // Initialize and show the new toast using Bootstrap API
+            const toastElements = container.querySelectorAll('.toast');
+            const latestToast = toastElements[toastElements.length - 1];
+            const bsToast = new bootstrap.Toast(latestToast, { delay: 3000 });
+            bsToast.show();
+            
+            // Cleanup DOM after hiding
+            latestToast.addEventListener('hidden.bs.toast', () => {
+                latestToast.remove();
+            });
+        }
+    </script>
+</body>
+</html>
