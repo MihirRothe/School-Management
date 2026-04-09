@@ -147,21 +147,52 @@ app.delete('/api/schedule/:id', async (req, res) => {
     }
 });
 
+// Attendance API
+app.post('/api/attendance', async (req, res) => {
+    const { student_id, date, status } = req.body;
+    try {
+        const [existing] = await pool.query('SELECT id FROM attendance WHERE student_id = ? AND date = ?', [student_id, date]);
+        if (existing.length > 0) {
+            await pool.query('UPDATE attendance SET status = ? WHERE id = ?', [status, existing[0].id]);
+        } else {
+            await pool.query('INSERT INTO attendance (student_id, date, status) VALUES (?, ?, ?)', [student_id, date, status]);
+        }
+        res.json({ message: 'Attendance marked successfully' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.get('/api/attendance', async (req, res) => {
+    try {
+        const [rows] = await pool.query('SELECT * FROM attendance ORDER BY date DESC');
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.get('/api/stats', async (req, res) => {
     try {
-        console.log("Pool object is:", typeof pool, pool ? "exists" : "falsy");
         const [students] = await pool.query('SELECT count(*) as count FROM students');
         const [teachers] = await pool.query('SELECT count(*) as count FROM teachers');
         const [classes] = await pool.query('SELECT count(DISTINCT class) as count FROM students');
         
-        let attendanceRate = 94; // fallback
-        const [attendance] = await pool.query('SELECT sum(case when status="Present" then 1 else 0 end) as present, count(*) as total FROM attendance');
-        if (attendance[0].total > 0) {
-            attendanceRate = Math.round((attendance[0].present / attendance[0].total) * 100);
+        let targetDate = new Date().toISOString().split('T')[0];
+        const [attendance] = await pool.query('SELECT count(*) as present FROM attendance WHERE status="Present" AND date LIKE ?', [`${targetDate}%`]);
+        
+        let totalStudents = students[0].count;
+        let presentCount = attendance[0].present;
+        
+        let attendanceRate = 0; 
+        if (totalStudents > 0) {
+            attendanceRate = Math.round((presentCount / totalStudents) * 100);
+        } else {
+            attendanceRate = 100; // Default when no students
         }
 
         res.json({
-            students: students[0].count,
+            students: totalStudents,
             teachers: teachers[0].count,
             classes: classes[0].count,
             attendanceRate: attendanceRate

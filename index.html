@@ -545,63 +545,8 @@
                                             <th scope="col" class="text-center">Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>S-1001</td>
-                                            <td class="fw-medium">Alice Smith</td>
-                                            <td><span class="badge-present">Present</span></td>
-                                            <td class="text-center">
-                                                <div class="btn-group" role="group">
-                                                    <input type="radio" class="btn-check" name="att1" id="p1" checked>
-                                                    <label class="btn btn-outline-success btn-sm" for="p1">P</label>
-                                                    
-                                                    <input type="radio" class="btn-check" name="att1" id="a1">
-                                                    <label class="btn btn-outline-danger btn-sm" for="a1">A</label>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>S-1002</td>
-                                            <td class="fw-medium">Bob Johnson</td>
-                                            <td><span class="badge-absent">Absent</span></td>
-                                            <td class="text-center">
-                                                <div class="btn-group" role="group">
-                                                    <input type="radio" class="btn-check" name="att2" id="p2">
-                                                    <label class="btn btn-outline-success btn-sm" for="p2">P</label>
-                                                    
-                                                    <input type="radio" class="btn-check" name="att2" id="a2" checked>
-                                                    <label class="btn btn-outline-danger btn-sm" for="a2">A</label>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>S-1003</td>
-                                            <td class="fw-medium">Charlie Brown</td>
-                                            <td><span class="badge-present">Present</span></td>
-                                            <td class="text-center">
-                                                <div class="btn-group" role="group">
-                                                    <input type="radio" class="btn-check" name="att3" id="p3" checked>
-                                                    <label class="btn btn-outline-success btn-sm" for="p3">P</label>
-                                                    
-                                                    <input type="radio" class="btn-check" name="att3" id="a3">
-                                                    <label class="btn btn-outline-danger btn-sm" for="a3">A</label>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>S-1004</td>
-                                            <td class="fw-medium">Diana Miller</td>
-                                            <td><span class="badge-present">Present</span></td>
-                                            <td class="text-center">
-                                                <div class="btn-group" role="group">
-                                                    <input type="radio" class="btn-check" name="att4" id="p4" checked>
-                                                    <label class="btn btn-outline-success btn-sm" for="p4">P</label>
-                                                    
-                                                    <input type="radio" class="btn-check" name="att4" id="a4">
-                                                    <label class="btn btn-outline-danger btn-sm" for="a4">A</label>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <tbody id="attendance-tbody">
+                                        <!-- Dynamic Data -->
                                     </tbody>
                                 </table>
                             </div>
@@ -840,7 +785,18 @@
                     cards[0].textContent = stats.students;
                     cards[1].textContent = stats.teachers;
                     cards[2].textContent = stats.classes;
-                    cards[3].textContent = stats.attendanceRate + '%';
+                    
+                    const attCard = cards[3];
+                    attCard.textContent = stats.attendanceRate + '%';
+                    
+                    attCard.className = '';
+                    if (stats.attendanceRate > 90) {
+                        attCard.classList.add('text-success');
+                    } else if (stats.attendanceRate >= 70) {
+                        attCard.classList.add('text-warning');
+                    } else {
+                        attCard.classList.add('text-danger');
+                    }
                 }
             } catch (err) {
                 console.error("Dashboard stats fetch failed", err);
@@ -862,6 +818,41 @@
                             <td>${s.class}</td>
                             <td>${s.contact}</td>
                             <td><span class="badge bg-success rounded-pill px-3">Active</span></td>
+                        </tr>`);
+                    });
+                }
+
+                // Attendance processing
+                const attTbody = document.getElementById('attendance-tbody');
+                if (attTbody && students) {
+                    const dateObj = document.getElementById('attendance-date');
+                    const targetDate = dateObj ? dateObj.value : new Date().toISOString().split('T')[0];
+                    let attRes = await fetch(`${API_URL}/attendance`);
+                    let attendances = await attRes.json();
+                    
+                    attTbody.innerHTML = '';
+                    students.forEach(s => {
+                        let record = attendances.find(a => a.student_id === s.id && a.date.startsWith(targetDate));
+                        let isP = record && record.status === 'Present' ? 'checked' : '';
+                        let isA = record && record.status === 'Absent' ? 'checked' : '';
+                        if (!record) isP = 'checked'; // default visual
+                        
+                        let badgeClass = (record && record.status === 'Absent' || isA) ? "badge-absent" : "badge-present";
+                        let badgeText = (record && record.status === 'Absent' || isA) ? "Absent" : "Present";
+
+                        attTbody.insertAdjacentHTML('beforeend', `<tr>
+                            <td>${s.roll_no}</td>
+                            <td class="fw-medium">${s.name}</td>
+                            <td><span class="${badgeClass}" id="badge-${s.id}">${badgeText}</span></td>
+                            <td class="text-center">
+                                <div class="btn-group" role="group">
+                                    <input type="radio" class="btn-check" name="att${s.id}" id="p${s.id}" value="Present" ${isP} onchange="markAttendance(${s.id}, 'Present')">
+                                    <label class="btn btn-outline-success btn-sm" for="p${s.id}">P</label>
+                                    
+                                    <input type="radio" class="btn-check" name="att${s.id}" id="a${s.id}" value="Absent" ${isA} onchange="markAttendance(${s.id}, 'Absent')">
+                                    <label class="btn btn-outline-danger btn-sm" for="a${s.id}">A</label>
+                                </div>
+                            </td>
                         </tr>`);
                     });
                 }
@@ -1152,6 +1143,33 @@
                         tr[i].style.display = 'none';
                     }
                 }       
+            }
+        }
+
+        async function markAttendance(studentId, status) {
+            const dateObj = document.getElementById('attendance-date');
+            if(!dateObj || !dateObj.value) return;
+            const data = {
+                student_id: studentId,
+                date: dateObj.value,
+                status: status
+            };
+            try {
+                await fetch(`${API_URL}/attendance`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const badge = document.getElementById(`badge-${studentId}`);
+                if(badge) {
+                    badge.textContent = status;
+                    badge.className = status === 'Present' ? 'badge-present' : 'badge-absent';
+                }
+                
+                fetchStats();
+            } catch(err) {
+                console.error('Network Error', err);
             }
         }
     </script>
