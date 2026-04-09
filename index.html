@@ -344,6 +344,7 @@
                     <a href="#" onclick="navigate('add-teacher', this)"><i class="fa-solid fa-chalkboard-user"></i> Add Teacher</a>
                     <a href="#" onclick="navigate('attendance', this)"><i class="fa-solid fa-calendar-check"></i> Attendance</a>
                     <a href="#" onclick="navigate('schedule', this)"><i class="fa-solid fa-clock"></i> Class Schedule</a>
+                    <a href="#" onclick="navigate('timetable', this)"><i class="fa-solid fa-calendar-days"></i> View Timetable</a>
                     <a href="#" onclick="navigate('view-data', this)"><i class="fa-solid fa-database"></i> View Data</a>
                     <hr style="margin: 15px 20px; opacity: 0.1;">
                     <a href="#" onclick="logout()" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
@@ -436,15 +437,15 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label">Student Name</label>
-                                            <input type="text" class="form-control" placeholder="e.g. John Doe" value="John Doe" required>
+                                            <input type="text" class="form-control" id="studentName" placeholder="e.g. John Doe" value="John Doe" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Roll Number</label>
-                                            <input type="text" class="form-control" placeholder="e.g. S-1001" value="S-1052" required>
+                                            <input type="text" class="form-control" id="studentRoll" placeholder="e.g. S-1001" value="S-1052" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Class / Grade</label>
-                                            <select class="form-select" required>
+                                            <select class="form-select" id="studentClass" required>
                                                 <option value="">Select Class</option>
                                                 <option selected>Grade 10 - A</option>
                                                 <option>Grade 10 - B</option>
@@ -455,11 +456,11 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Contact Number</label>
-                                            <input type="tel" class="form-control" placeholder="+1 (555) 000-0000" value="+1 (555) 123-4567" required>
+                                            <input type="tel" class="form-control" id="studentContact" placeholder="+1 (555) 000-0000" value="+1 (555) 123-4567" required>
                                         </div>
                                         <div class="col-12">
                                             <label class="form-label">Student Address</label>
-                                            <textarea class="form-control" rows="3" placeholder="Residential Address">123 School View Avenue, Education City</textarea>
+                                            <textarea class="form-control" id="studentAddress" rows="3" placeholder="Residential Address">123 School View Avenue, Education City</textarea>
                                         </div>
                                         <div class="col-12 mt-4 text-end">
                                             <button type="reset" class="btn btn-light me-2">Clear</button>
@@ -482,11 +483,11 @@
                                     <div class="row g-3">
                                         <div class="col-md-12">
                                             <label class="form-label">Teacher Name</label>
-                                            <input type="text" class="form-control" placeholder="e.g. Sarah Williams" value="Prof. Sarah Williams" required>
+                                            <input type="text" class="form-control" id="teacherName" placeholder="e.g. Sarah Williams" value="Prof. Sarah Williams" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Main Subject</label>
-                                            <select class="form-select" required>
+                                            <select class="form-select" id="teacherSubject" required>
                                                 <option value="">Select Subject</option>
                                                 <option selected>Mathematics</option>
                                                 <option>Physics</option>
@@ -497,15 +498,15 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Years of Experience</label>
-                                            <input type="number" class="form-control" placeholder="e.g. 5" value="8" required min="0">
+                                            <input type="number" class="form-control" id="teacherExperience" placeholder="e.g. 5" value="8" required min="0">
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Email Address</label>
-                                            <input type="email" class="form-control" placeholder="email@school.edu" value="sarah.williams@school.edu" required>
+                                            <input type="email" class="form-control" id="teacherEmail" placeholder="email@school.edu" value="sarah.williams@school.edu" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Joining Date</label>
-                                            <input type="date" class="form-control" value="2023-08-15" required>
+                                            <input type="date" class="form-control" id="teacherJoiningDate" value="2023-08-15" required>
                                         </div>
                                         <div class="col-12 mt-4 text-end">
                                             <button type="reset" class="btn btn-light me-2">Clear</button>
@@ -621,7 +622,7 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label class="form-label">Day of Week</label>
-                                            <select class="form-select" required>
+                                            <select class="form-select" id="scheduleDay" required>
                                                 <option value="">Select Day</option>
                                                 <option selected>Monday</option>
                                                 <option>Tuesday</option>
@@ -632,11 +633,11 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Time Slot</label>
-                                            <input type="time" class="form-control" value="09:00" required>
+                                            <input type="time" class="form-control" id="scheduleTime" value="09:00" required>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Subject</label>
-                                            <select class="form-select" required>
+                                            <select class="form-select" id="scheduleSubject" required>
                                                 <option value="">Select Subject</option>
                                                 <option selected>Mathematics</option>
                                                 <option>Science</option>
@@ -645,7 +646,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Teacher</label>
-                                            <select class="form-select" required>
+                                            <select class="form-select" id="scheduleTeacher" required>
                                                 <option value="">Assign Teacher</option>
                                                 <option selected>Prof. Sarah Williams</option>
                                                 <option>Mr. James Wilson</option>
@@ -754,6 +755,35 @@
                         </div>
                     </div>
                 </section>
+
+                <!-- View Timetable Section -->
+                <section id="timetable" class="page-section">
+                    <div class="content-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h4 class="content-card-title mb-0 border-0 pb-0">Class Timetable</h4>
+                            <div class="input-group" style="width: 250px;">
+                                <input type="text" class="form-control" id="timetableFilter" placeholder="Filter by Day..." onkeyup="filterTimetable()">
+                                <button class="btn btn-outline-secondary" type="button"><i class="fa-solid fa-search"></i></button>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle border" id="timetable-table">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Day</th>
+                                        <th>Time</th>
+                                        <th>Subject</th>
+                                        <th>Teacher</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Dynamic Timetable Data -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
             </main>
         </div>
     </div>
@@ -769,65 +799,305 @@
             if(dateInput) {
                 dateInput.valueAsDate = new Date();
             }
+
+            // Inject Modals
+            const modalHTML = `
+                <div class="modal fade" id="dataModal" tabindex="-1">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="dataModalTitle">Data Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body" id="dataModalBody">
+                        <!-- Data will be placed here -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+            // Hook forms
+            setupForms();
+            
+            // Add click listeners to cards
+            setupDashboardCards();
+
+            // Initial fetch
+            fetchStats();
+            fetchData();
         });
 
-        // Handle Login Submission
+        const API_URL = 'http://localhost:3000/api';
+
+        async function fetchStats() {
+            try {
+                const res = await fetch(`${API_URL}/stats`);
+                const stats = await res.json();
+                const cards = document.querySelectorAll('.stat-card h3');
+                if (cards.length >= 4) {
+                    cards[0].textContent = stats.students;
+                    cards[1].textContent = stats.teachers;
+                    cards[2].textContent = stats.classes;
+                    cards[3].textContent = stats.attendanceRate + '%';
+                }
+            } catch (err) {
+                console.error("Dashboard stats fetch failed", err);
+            }
+        }
+
+        async function fetchData() {
+            try {
+                // Students
+                let res = await fetch(`${API_URL}/students`);
+                let students = await res.json();
+                const studentTbody = document.querySelectorAll('#view-data table tbody')[0];
+                if (studentTbody) {
+                    studentTbody.innerHTML = '';
+                    students.forEach(s => {
+                        studentTbody.insertAdjacentHTML('beforeend', `<tr>
+                            <td>${s.roll_no}</td>
+                            <td class="fw-medium">${s.name}</td>
+                            <td>${s.class}</td>
+                            <td>${s.contact}</td>
+                            <td><span class="badge bg-success rounded-pill px-3">Active</span></td>
+                        </tr>`);
+                    });
+                }
+
+                // Teachers
+                res = await fetch(`${API_URL}/teachers`);
+                let teachers = await res.json();
+                const teacherTbody = document.querySelectorAll('#view-data table tbody')[1];
+                if (teacherTbody) {
+                    teacherTbody.innerHTML = '';
+                    teachers.forEach(t => {
+                        teacherTbody.insertAdjacentHTML('beforeend', `<tr>
+                            <td>T-${t.id}</td>
+                            <td class="fw-medium">${t.name}</td>
+                            <td>${t.subject}</td>
+                            <td>${t.experience} Years</td>
+                        </tr>`);
+                    });
+                }
+
+                // Timetable
+                res = await fetch(`${API_URL}/schedule`);
+                let schedule = await res.json();
+                const scheduleTbody = document.querySelector('#timetable-table tbody');
+                if (scheduleTbody) {
+                    scheduleTbody.innerHTML = '';
+                    schedule.forEach(s => {
+                        scheduleTbody.insertAdjacentHTML('beforeend', `<tr>
+                            <td class="fw-medium">${s.day}</td>
+                            <td>${s.time}</td>
+                            <td>${s.subject}</td>
+                            <td>${s.teacher}</td>
+                            <td><button class="btn btn-sm btn-outline-danger" onclick="deleteSchedule(${s.id})"><i class="fa-solid fa-trash"></i></button></td>
+                        </tr>`);
+                    });
+                }
+            } catch (err) {
+                console.error("Data fetch failed", err);
+            }
+        }
+
+        function setupForms() {
+            const studentForm = document.querySelector('#add-student form');
+            if (studentForm) {
+                studentForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    // student form inputs: Name, Roll, Class, Contact, Address
+                    const data = {
+                        name: document.getElementById('studentName').value,
+                        roll_no: document.getElementById('studentRoll').value,
+                        class: document.getElementById('studentClass').value,
+                        contact: document.getElementById('studentContact').value,
+                        address: document.getElementById('studentAddress').value
+                    };
+                    try {
+                        const res = await fetch(`${API_URL}/students`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        if(res.ok) {
+                            showToast('Action Successful', 'Student Added Successfully!', 'success');
+                            studentForm.reset();
+                            fetchStats();
+                            fetchData();
+                        } else {
+                            showToast('Error', 'Failed to add student', 'error');
+                        }
+                    } catch(err) {
+                        showToast('Error', 'Network Error', 'error');
+                    }
+                };
+            }
+
+            const teacherForm = document.querySelector('#add-teacher form');
+            if (teacherForm) {
+                teacherForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    // teacher form inputs: Name, Subject, Exp, Email
+                    const data = {
+                        name: document.getElementById('teacherName').value,
+                        subject: document.getElementById('teacherSubject').value,
+                        experience: document.getElementById('teacherExperience').value,
+                        email: document.getElementById('teacherEmail').value
+                    };
+                    try {
+                        const res = await fetch(`${API_URL}/teachers`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        if(res.ok) {
+                            showToast('Action Successful', 'Teacher Added Successfully!', 'success');
+                            teacherForm.reset();
+                            fetchStats();
+                            fetchData();
+                        } else {
+                            showToast('Error', 'Failed to add teacher', 'error');
+                        }
+                    } catch(err) {
+                        showToast('Error', 'Network Error', 'error');
+                    }
+                };
+            }
+
+            const attendanceForm = document.querySelector('#attendance form');
+            if (attendanceForm) {
+                attendanceForm.onsubmit = (e) => {
+                    e.preventDefault();
+                    showToast('Action Successful', 'Attendance saved!', 'success');
+                }
+            }
+
+            const scheduleForm = document.querySelector('#schedule form');
+            if (scheduleForm) {
+                scheduleForm.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const data = {
+                        day: document.getElementById('scheduleDay').value,
+                        time: document.getElementById('scheduleTime').value,
+                        subject: document.getElementById('scheduleSubject').value,
+                        teacher: document.getElementById('scheduleTeacher').value
+                    };
+                    try {
+                        const res = await fetch(`${API_URL}/schedule`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(data)
+                        });
+                        if(res.ok) {
+                            showToast('Action Successful', 'Class Scheduled Successfully!', 'success');
+                            scheduleForm.reset();
+                            fetchData();
+                        } else {
+                            showToast('Error', 'Failed to add schedule', 'error');
+                        }
+                    } catch(err) {
+                        showToast('Error', 'Network Error', 'error');
+                    }
+                }
+            }
+        }
+
+        function setupDashboardCards() {
+            const cards = document.querySelectorAll('.stat-card');
+            cards.forEach((card, index) => {
+                card.style.cursor = 'pointer';
+                card.onclick = () => openModalForCard(index);
+            });
+        }
+
+        async function openModalForCard(index) {
+            const modal = new bootstrap.Modal(document.getElementById('dataModal'));
+            const titleEl = document.getElementById('dataModalTitle');
+            const bodyEl = document.getElementById('dataModalBody');
+
+            try {
+                if (index === 0) {
+                    titleEl.textContent = 'List of Students';
+                    const res = await fetch(`${API_URL}/students`);
+                    const students = await res.json();
+                    let html = '<ul class="list-group">';
+                    students.forEach(s => { html += `<li class="list-group-item d-flex justify-content-between"><span>${s.name} (${s.roll_no})</span> <span class="badge bg-primary rounded-pill">${s.class}</span></li>`; });
+                    html += '</ul>';
+                    bodyEl.innerHTML = html;
+                } else if (index === 1) {
+                    titleEl.textContent = 'List of Teachers';
+                    const res = await fetch(`${API_URL}/teachers`);
+                    const teachers = await res.json();
+                    let html = '<ul class="list-group">';
+                    teachers.forEach(t => { html += `<li class="list-group-item d-flex justify-content-between"><span>${t.name}</span> <span class="badge bg-success rounded-pill">${t.subject}</span></li>`; });
+                    html += '</ul>';
+                    bodyEl.innerHTML = html;
+                } else if (index === 2) {
+                    titleEl.textContent = 'Classes Offered';
+                    const res = await fetch(`${API_URL}/students`);
+                    const students = await res.json();
+                    const classes = [...new Set(students.map(s => s.class))];
+                    let html = '<ul class="list-group">';
+                    classes.forEach(c => { html += `<li class="list-group-item">${c}</li>`; });
+                    html += '</ul>';
+                    bodyEl.innerHTML = html;
+                } else if (index === 3) {
+                    titleEl.textContent = 'Attendance Summary';
+                    bodyEl.innerHTML = '<div class="alert alert-info">Overall attendance rate is roughly 94%. Further daily breakdowns will be shown here.</div>';
+                }
+                modal.show();
+            } catch (err) {
+                console.error(err);
+                bodyEl.innerHTML = '<div class="alert alert-danger">Error fetching data.</div>';
+                modal.show();
+            }
+        }
+
         function handleLogin(e) {
             e.preventDefault();
-            // In a real app, validate credentials here. For this UI mockup, just proceed.
             document.getElementById('login-page').style.display = 'none';
             document.getElementById('main-app').style.display = 'block';
-            
             showToast('Login Successful', 'Welcome back to the admin dashboard.', 'success');
         }
 
-        // Handle Logout
         function logout() {
             document.getElementById('main-app').style.display = 'none';
             document.getElementById('login-page').style.display = 'flex';
             document.getElementById('loginForm').reset();
-            // Remove active classes
             document.querySelectorAll('.sidebar-menu a').forEach(a => a.classList.remove('active'));
             document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
-            // Set default route
             document.querySelector('.sidebar-menu a').classList.add('active');
             document.getElementById('dashboard').classList.add('active');
         }
 
-        // Navigation Menu
         const pageTitles = {
             'dashboard': 'Dashboard Overview',
             'add-student': 'Student Admission',
             'add-teacher': 'Teacher Registration',
             'attendance': 'Manage Attendance',
             'schedule': 'Class Scheduling',
+            'timetable': 'Class Timetable',
             'view-data': 'System Records'
         };
 
         function navigate(sectionId, element) {
-            // Remove active class from all links and sections
             document.querySelectorAll('.sidebar-menu a').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
-            
-            // Add active class to clicked link and corresponding section
             element.classList.add('active');
             document.getElementById(sectionId).classList.add('active');
-            
-            // Update Page Title
             document.getElementById('page-title').innerText = pageTitles[sectionId] || 'School Management System';
-        }
-
-        // Generic Form Submission Handler
-        function handleSubmit(e, successMsg) {
-            e.preventDefault();
-            showToast('Action Successful', successMsg, 'success');
-            // e.target.reset(); // Optional: reset form after submission
-        }
-
-        // Toast Notification System
-        function showToast(title, message, type) {
-            let bgClass = type === 'success' ? 'bg-success' : 'bg-primary';
             
+            if(sectionId === 'view-data' || sectionId === 'dashboard' || sectionId === 'timetable') {
+                fetchStats();
+                fetchData();
+            }
+        }
+
+        function showToast(title, message, type) {
+            let bgClass = type === 'success' ? 'bg-success' : (type === 'error' ? 'bg-danger' : 'bg-primary');
             const toastHTML = `
                 <div class="toast align-items-center text-white ${bgClass} border-0 mb-3" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="d-flex">
@@ -838,20 +1108,51 @@
                     </div>
                 </div>
             `;
-            
             const container = document.getElementById('toast-container');
             container.insertAdjacentHTML('beforeend', toastHTML);
-            
-            // Initialize and show the new toast using Bootstrap API
             const toastElements = container.querySelectorAll('.toast');
             const latestToast = toastElements[toastElements.length - 1];
             const bsToast = new bootstrap.Toast(latestToast, { delay: 3000 });
             bsToast.show();
-            
-            // Cleanup DOM after hiding
             latestToast.addEventListener('hidden.bs.toast', () => {
                 latestToast.remove();
             });
+        }
+
+        async function deleteSchedule(id) {
+            if(confirm('Are you sure you want to delete this schedule?')) {
+                try {
+                    const res = await fetch(`${API_URL}/schedule/${id}`, { method: 'DELETE' });
+                    if(res.ok) {
+                        showToast('Action Successful', 'Schedule Deleted', 'success');
+                        fetchData();
+                    } else {
+                        showToast('Error', 'Failed to delete', 'error');
+                    }
+                } catch(err) {
+                    showToast('Error', 'Network error', 'error');
+                }
+            }
+        }
+
+        function filterTimetable() {
+            const filter = document.getElementById('timetableFilter').value.toUpperCase();
+            const table = document.getElementById('timetable-table');
+            const tr = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < tr.length; i++) {
+                let tdDay = tr[i].getElementsByTagName('td')[0];
+                let tdSubject = tr[i].getElementsByTagName('td')[2];
+                if (tdDay || tdSubject) {
+                    let txtDay = tdDay.textContent || tdDay.innerText;
+                    let txtSubject = tdSubject.textContent || tdSubject.innerText;
+                    if (txtDay.toUpperCase().indexOf(filter) > -1 || txtSubject.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = '';
+                    } else {
+                        tr[i].style.display = 'none';
+                    }
+                }       
+            }
         }
     </script>
 </body>
